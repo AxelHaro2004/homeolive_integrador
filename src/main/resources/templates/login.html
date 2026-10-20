@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Iniciar sesión · Homeolive</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com"/>
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin="crossorigin"/>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700;800&amp;display=swap"/>
+  <link rel="stylesheet" th:href="@{/css/reset.css}"/>
+  <link rel="stylesheet" th:href="@{/css/homeolive.css}"/>
+</head>
+<body>
+<main class="login-page">
+  <section class="login-brand">
+    <div class="brand-orb brand-orb-one"></div>
+    <div class="brand-orb brand-orb-two"></div>
+    <div class="login-logo-wrap">
+      <img th:src="@{/img/curenci-logo.jpg}" alt="Curenci, Homeopatía - Terapia Floral"/>
+    </div>
+    <div class="login-message">
+      <span class="eyebrow light">Gestión integral</span>
+      <h1>Bienestar que fluye,<br/>gestión que conecta.</h1>
+      <p>Pedidos, ventas y entregas en un solo lugar.</p>
+    </div>
+  </section>
+
+  <section class="login-form-side">
+    <form class="login-form" th:action="@{/login}" method="post">
+      <div class="mobile-login-logo">
+        <img th:src="@{/img/curenci-logo.jpg}" alt=""/>
+      </div>
+      <span class="eyebrow">Plataforma Curenci</span>
+      <h2>Bienvenido de nuevo</h2>
+      <p class="form-lead">Ingresa tus datos para acceder a tu espacio de trabajo.</p>
+
+      <div class="login-fields">
+        <label class="field">
+          <span>Usuario</span>
+          <input type="text" name="usuario" placeholder="nombre@curenci.pe" required="required"/>
+        </label>
+        <label class="field">
+          <span>Contraseña</span>
+          <input type="password" name="clave" placeholder="Ingresa tu contraseña" minlength="3" required="required"/>
+        </label>
+        <label class="field">
+          <span>Selecciona tu rol</span>
+          <select name="rol">
+            <option th:each="r : ${roles}" th:value="${r.name()}" th:text="${r.etiqueta()}">Vendedor</option>
+          </select>
+        </label>
+      </div>
+
+      <button type="submit" class="button button-primary login-button">
+        Iniciar sesión
+        <svg th:replace="~{fragments/iconos :: icono('chevron', 18)}"></svg>
+      </button>
+      <p class="login-help">¿Necesitas ayuda? Contacta al administrador del sistema.</p>
+    </form>
+  </section>
+</main>
+</body>
+</html>

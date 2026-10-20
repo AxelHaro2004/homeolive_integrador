@@ -1,0 +1,17 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<body>
+
+<span th:fragment="estado(e)" class="status" th:classappend="${e.css()}" th:text="${e.etiqueta()}">En preparación</span>
+
+<div th:fragment="items(lista)" class="item-summary">
+  <span th:each="it : ${lista}"><th:block th:text="|${it.cantidad()}× ${it.producto()}|">2× Calma Kids</th:block> <small th:text="${it.presentacion()}">30 ml</small></span>
+</div>
+
+<div th:fragment="buscador(tabla)" class="search-box">
+  <svg th:replace="~{fragments/iconos :: icono('search', 18)}"></svg>
+  <input type="text" placeholder="Buscar por nombre, DNI o número..." th:attr="data-filtro=${tabla}"/>
+</div>
+
+</body>
+</html>

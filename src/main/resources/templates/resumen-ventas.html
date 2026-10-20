@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org"
+      th:replace="~{layout :: layout(${vista}, ~{::contenido})}">
+<body>
+<th:block th:fragment="contenido">
+
+  <section class="card">
+    <div class="table-toolbar">
+      <div th:replace="~{fragments/componentes :: buscador('tabla-ventas')}"></div>
+      <button type="button" class="button button-secondary" th:if="${rol.puedeExportar()}"
+              data-aviso="Reporte de ventas de los últimos 30 días exportado.">
+        <svg th:replace="~{fragments/iconos :: icono('download', 17)}"></svg>
+        Exportar reporte últimos 30 días
+      </button>
+    </div>
+
+    <div class="table-wrap">
+      <table id="tabla-ventas">
+        <thead>
+          <tr><th>N° venta</th><th>DNI</th><th>Cliente</th><th>N° pedido</th><th>Monto total</th></tr>
+        </thead>
+        <tbody>
+          <tr th:each="p : ${pedidos}">
+            <td><strong class="linkish" th:text="${p.venta()}">VEN-5081</strong></td>
+            <td th:text="${p.cliente().dni()}">72541863</td>
+            <td th:text="${p.cliente().nombre()}">María Fernanda Rojas</td>
+            <td th:text="${p.codigo()}">PED-1048</td>
+            <td><strong th:text="${p.montoTexto()}">S/ 168.00</strong></td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="table-footer">
+      <span th:text="|${pedidos.size()} ventas registradas|">6 ventas registradas</span>
+      <strong th:text="|Total ${totalTexto}|">Total S/ 827.00</strong>
+    </div>
+  </section>
+
+</th:block>
+</body>
+</html>

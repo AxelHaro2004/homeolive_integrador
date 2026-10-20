@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org"
+      th:replace="~{layout :: layout(${vista}, ~{::contenido})}">
+<body>
+<th:block th:fragment="contenido">
+
+  <section class="card filter-card">
+    <div class="filter-copy">
+      <span class="filter-icon"><svg th:replace="~{fragments/iconos :: icono('users', 18)}"></svg></span>
+      <div><h3>Selecciona un cliente</h3><p>Consulta todos sus pedidos registrados</p></div>
+    </div>
+    <select data-navegar="cliente">
+      <option th:each="c : ${clientes}"
+              th:value="${c.id()}"
+              th:selected="${c.id() == seleccionado.id()}"
+              th:text="|${c.nombre()} · DNI ${c.dni()}|">María Fernanda Rojas · DNI 72541863</option>
+    </select>
+  </section>
+
+  <div class="client-strip">
+    <div class="avatar large" th:text="${seleccionado.iniciales()}">MF</div>
+    <div><span>Cliente seleccionado</span><strong th:text="${seleccionado.nombre()}">María Fernanda Rojas</strong></div>
+    <div><span>DNI</span><strong th:text="${seleccionado.dni()}">72541863</strong></div>
+    <div><span>Teléfono</span><strong th:text="${seleccionado.telefono()}">987 654 321</strong></div>
+    <div><span>Pedidos</span><strong th:text="${pedidos.size()}">2</strong></div>
+  </div>
+
+  <section class="card">
+    <div class="section-heading">
+      <div><h3>Historial de pedidos</h3><p th:text="|${pedidos.size()} registros encontrados|">2 registros encontrados</p></div>
+    </div>
+    <div class="table-wrap">
+      <table>
+        <thead>
+          <tr><th>N° pedido</th><th>Fecha</th><th>Ítems</th><th>Envío</th><th>Total</th><th>Estado</th></tr>
+        </thead>
+        <tbody>
+          <tr th:each="p : ${pedidos}">
+            <td><strong th:text="${p.codigo()}">PED-1048</strong></td>
+            <td th:text="${p.fecha()}">Hoy, 09:42</td>
+            <td><div th:replace="~{fragments/componentes :: items(${p.items()})}"></div></td>
+            <td th:text="${p.envio().etiqueta()}">Motorizado</td>
+            <td><strong th:text="${p.montoTexto()}">S/ 168.00</strong></td>
+            <td><span th:replace="~{fragments/componentes :: estado(${p.estado()})}"></span></td>
+          </tr>
+          <tr th:if="${pedidos.isEmpty()}">
+            <td class="empty-cell" colspan="6">No hay registros para mostrar.</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+</th:block>
+</body>
+</html>

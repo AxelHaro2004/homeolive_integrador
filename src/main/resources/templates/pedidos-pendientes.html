@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org"
+      th:replace="~{layout :: layout(${vista}, ~{::contenido})}">
+<body>
+<th:block th:fragment="contenido">
+
+  <div class="order-card-grid">
+    <section class="card work-order" th:each="p : ${pendientes}">
+      <div class="work-order-head">
+        <div><span>Pedido</span><h3 th:text="${p.codigo()}">PED-1048</h3></div>
+        <span th:replace="~{fragments/componentes :: estado(${p.estado()})}"></span>
+      </div>
+
+      <div class="work-client">
+        <div class="avatar" th:text="${p.cliente().iniciales()}">MF</div>
+        <div>
+          <strong th:text="${p.cliente().nombre()}">María Fernanda Rojas</strong>
+          <span th:text="|DNI ${p.cliente().dni()} · ${p.envio().etiqueta()}|">DNI 72541863 · Motorizado</span>
+        </div>
+      </div>
+
+      <div class="preparation-list">
+        <div th:each="it : ${p.items()}">
+          <span class="quantity" th:text="${it.cantidad()}">2</span>
+          <div>
+            <strong th:text="${it.producto()}">Calma Kids</strong>
+            <small th:text="|${it.categoria()} · ${it.presentacion()}|">Flores de Bach · 30 ml</small>
+          </div>
+          <span class="prep-check"><svg th:replace="~{fragments/iconos :: icono('check', 15)}"></svg></span>
+        </div>
+      </div>
+
+      <button type="button" class="button button-primary"
+              th:attr="data-aviso=|Maqueta: ${p.codigo()} pasaría a «Listo para envío».|">
+        <svg th:replace="~{fragments/iconos :: icono('check', 18)}"></svg>
+        Marcar listo para envío
+      </button>
+    </section>
+
+    <section class="card empty-state" th:if="${pendientes.isEmpty()}">
+      <div class="empty-icon"><svg th:replace="~{fragments/iconos :: icono('check', 28)}"></svg></div>
+      <h3>Todo está preparado</h3>
+      <p>No hay pedidos pendientes en este momento.</p>
+    </section>
+  </div>
+
+</th:block>
+</body>
+</html>

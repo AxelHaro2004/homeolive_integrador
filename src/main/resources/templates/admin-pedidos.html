@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org"
+      th:replace="~{layout :: layout(${vista}, ~{::contenido})}">
+<body>
+<th:block th:fragment="contenido">
+
+  <section class="card">
+    <div class="table-toolbar">
+      <div th:replace="~{fragments/componentes :: buscador('tabla-admin-pedidos')}"></div>
+      <button type="button" class="button button-primary"
+              th:attr="data-modal-abrir='modal-pedido',data-titulo='Crear nuevo pedido',data-descripcion='',data-boton='Crear pedido'">
+        <svg th:replace="~{fragments/iconos :: icono('plus', 17)}"></svg>
+        Crear pedido
+      </button>
+    </div>
+
+    <div class="table-wrap">
+      <table id="tabla-admin-pedidos">
+        <thead>
+          <tr><th>Pedido</th><th>Cliente</th><th>Envío</th><th>Total</th><th>Estado</th><th>Acciones</th></tr>
+        </thead>
+        <tbody>
+          <tr th:each="p : ${pedidos}">
+            <td><strong class="linkish" th:text="${p.codigo()}">PED-1048</strong><small class="subcell" th:text="${p.venta()}">VEN-5081</small></td>
+            <td th:text="${p.cliente().nombre()}">María Fernanda Rojas</td>
+            <td th:text="${p.envio().etiqueta()}">Motorizado</td>
+            <td th:text="${p.montoTexto()}">S/ 168.00</td>
+            <td><span th:replace="~{fragments/componentes :: estado(${p.estado()})}"></span></td>
+            <td>
+              <div class="row-actions">
+                <button type="button" aria-label="Editar"
+                        th:attr="data-modal-abrir='modal-pedido',data-titulo='Editar pedido',data-descripcion=${p.codigo()},data-boton='Guardar cambios',data-cliente=${p.cliente().id()},data-envio=${p.envio().etiqueta()},data-estado=${p.estado().etiqueta()},data-monto=${p.monto()}">
+                  <svg th:replace="~{fragments/iconos :: icono('edit', 18)}"></svg>
+                </button>
+                <button type="button" class="danger-icon" aria-label="Eliminar" data-confirmar="¿Eliminar este pedido?">
+                  <svg th:replace="~{fragments/iconos :: icono('trash', 18)}"></svg>
+                </button>
+              </div>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  <div class="modal-backdrop" id="modal-pedido" hidden="hidden">
+    <div class="modal-panel">
+      <div class="modal-heading">
+        <div><h2 data-slot="titulo">Crear nuevo pedido</h2><p data-slot="descripcion"></p></div>
+        <button type="button" class="icon-button" aria-label="Cerrar" data-modal-cerrar="">
+          <svg th:replace="~{fragments/iconos :: icono('close', 18)}"></svg>
+        </button>
+      </div>
+      <form action="#" method="post">
+        <div class="modal-fields">
+          <label class="field">
+            <span>Cliente</span>
+            <select name="cliente"><option th:each="c : ${clientes}" th:value="${c.id()}" th:text="${c.nombre()}">María Fernanda Rojas</option></select>
+          </label>
+          <label class="field">
+            <span>Tipo de envío</span>
+            <select name="envio"><option>Motorizado</option><option>Olva</option><option>Shalom</option></select>
+          </label>
+          <label class="field">
+            <span>Estado</span>
+            <select name="estado"><option>En preparación</option><option>Listo para envío</option><option>Por confirmar</option><option>Entregado</option></select>
+          </label>
+          <label class="field"><span>Monto total</span><input name="monto" type="number" min="0" step="0.01" value="0"/></label>
+        </div>
+        <div class="modal-actions">
+          <button type="button" class="button button-ghost" data-modal-cerrar="">Cancelar</button>
+          <button type="submit" class="button button-primary" data-slot="boton">Crear pedido</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+</th:block>
+</body>
+</html>

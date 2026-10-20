@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org"
+      th:replace="~{layout :: layout(${vista}, ~{::contenido})}">
+<body>
+<th:block th:fragment="contenido">
+
+  <section class="card">
+    <div class="table-toolbar">
+      <div th:replace="~{fragments/componentes :: buscador('tabla-clientes')}"></div>
+      <button type="button" class="button button-primary"
+              th:attr="data-modal-abrir='modal-cliente',data-titulo='Crear nuevo cliente',data-boton='Crear cliente'">
+        <svg th:replace="~{fragments/iconos :: icono('plus', 17)}"></svg>
+        Crear cliente
+      </button>
+    </div>
+
+    <div class="table-wrap">
+      <table id="tabla-clientes">
+        <thead>
+          <tr><th>Cliente</th><th>DNI</th><th>Teléfono</th><th>Ubicación</th><th>Acciones</th></tr>
+        </thead>
+        <tbody>
+          <tr th:each="c : ${clientes}">
+            <td>
+              <div class="table-person">
+                <div class="avatar small" th:text="${c.iniciales()}">MF</div>
+                <strong th:text="${c.nombre()}">María Fernanda Rojas</strong>
+              </div>
+            </td>
+            <td th:text="${c.dni()}">72541863</td>
+            <td th:text="${c.telefono()}">987 654 321</td>
+            <td th:text="${c.ubicacion()}">Lima</td>
+            <td>
+              <div class="row-actions">
+                <button type="button" aria-label="Editar"
+                        th:attr="data-modal-abrir='modal-cliente',data-titulo='Editar cliente',data-boton='Guardar cambios',data-nombre=${c.nombre()},data-dni=${c.dni()},data-telefono=${c.telefono()},data-ubicacion=${c.ubicacion()}">
+                  <svg th:replace="~{fragments/iconos :: icono('edit', 18)}"></svg>
+                </button>
+                <button type="button" class="danger-icon" aria-label="Eliminar" data-confirmar="¿Eliminar este cliente?">
+                  <svg th:replace="~{fragments/iconos :: icono('trash', 18)}"></svg>
+                </button>
+              </div>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  <div class="modal-backdrop" id="modal-cliente" hidden="hidden">
+    <div class="modal-panel">
+      <div class="modal-heading">
+        <div><h2 data-slot="titulo">Crear nuevo cliente</h2></div>
+        <button type="button" class="icon-button" aria-label="Cerrar" data-modal-cerrar="">
+          <svg th:replace="~{fragments/iconos :: icono('close', 18)}"></svg>
+        </button>
+      </div>
+      <form action="#" method="post">
+        <div class="modal-fields">
+          <label class="field"><span>Nombre y apellidos</span><input name="nombre" required="required"/></label>
+          <label class="field"><span>DNI</span><input name="dni" maxlength="8" required="required"/></label>
+          <label class="field"><span>Teléfono</span><input name="telefono" required="required"/></label>
+          <label class="field">
+            <span>Ubicación</span>
+            <select name="ubicacion"><option>Lima</option><option>Provincia</option></select>
+          </label>
+        </div>
+        <div class="modal-actions">
+          <button type="button" class="button button-ghost" data-modal-cerrar="">Cancelar</button>
+          <button type="submit" class="button button-primary" data-slot="boton">Crear cliente</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+</th:block>
+</body>
+</html>

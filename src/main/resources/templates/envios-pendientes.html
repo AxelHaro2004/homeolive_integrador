@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org"
+      th:replace="~{layout :: layout(${vista}, ~{::contenido})}">
+<body>
+<th:block th:fragment="contenido">
+
+  <section class="shipping-section">
+    <div class="section-title-row">
+      <div>
+        <span class="section-number">01</span>
+        <div><h2>Listo para envío</h2><p>Pedidos preparados y pendientes de despacho</p></div>
+      </div>
+      <span class="count-pill" th:text="|${listos.size()} pedidos|">2 pedidos</span>
+    </div>
+
+    <div class="shipment-grid">
+      <section class="card shipment-card" th:each="p : ${listos}">
+        <div class="shipment-top">
+          <div><strong th:text="${p.codigo()}">PED-1047</strong><span th:text="${p.cliente().nombre()}">Jorge Luis Salazar</span></div>
+          <span class="shipping-tag" th:classappend="${p.envio().esMotorizado()} ? 'motor'">
+            <svg th:replace="~{fragments/iconos :: icono('truck', 15)}"></svg>
+            <th:block th:text="${p.envio().etiqueta()}">Olva</th:block>
+          </span>
+        </div>
+
+        <div th:replace="~{fragments/componentes :: items(${p.items()})}"></div>
+
+        <div class="shipment-meta">
+          <span><small>Destino</small><th:block th:text="${p.cliente().ubicacion()}">Provincia</th:block></span>
+          <span><small>Teléfono</small><th:block th:text="${p.cliente().telefono()}">946 120 883</th:block></span>
+        </div>
+
+        <button type="button" class="button button-primary" th:if="${p.envio().esMotorizado()}"
+                th:attr="data-aviso=|Maqueta: ${p.codigo()} pasaría a «Entregado».|">
+          <svg th:replace="~{fragments/iconos :: icono('check', 18)}"></svg>
+          Marcar entregado
+        </button>
+        <button type="button" class="button button-primary" th:unless="${p.envio().esMotorizado()}"
+                th:attr="data-modal-abrir='modal-courier',data-descripcion=|${p.codigo()} · ${p.cliente().nombre()}|,data-courier=${p.envio().etiqueta()}">
+          <svg th:replace="~{fragments/iconos :: icono('clipboard', 18)}"></svg>
+          Marcar por confirmar
+        </button>
+      </section>
+
+      <section class="card empty-state small" th:if="${listos.isEmpty()}">
+        <p>No hay pedidos listos para envío.</p>
+      </section>
+    </div>
+  </section>
+
+  <section class="shipping-section">
+    <div class="section-title-row">
+      <div>
+        <span class="section-number violet">02</span>
+        <div><h2>Por confirmar</h2><p>Envíos courier en seguimiento</p></div>
+      </div>
+      <span class="count-pill violet" th:text="|${porConfirmar.size()} pedidos|">1 pedidos</span>
+    </div>
+
+    <section class="card">
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr><th>Pedido</th><th>Cliente</th><th>Courier</th><th>ID pedido courier</th><th>Ítems</th><th>Acción</th></tr>
+          </thead>
+          <tbody>
+            <tr th:each="p : ${porConfirmar}">
+              <td><strong th:text="${p.codigo()}">PED-1045</strong></td>
+              <td th:text="${p.cliente().nombre()}">Carlos Mendoza Ruiz</td>
+              <td><span class="courier-label" th:text="${p.envio().etiqueta()}">Shalom</span></td>
+              <td><code th:text="${p.idCourier()}">SHA-9384512</code></td>
+              <td><div th:replace="~{fragments/componentes :: items(${p.items()})}"></div></td>
+              <td>
+                <button type="button" class="button button-secondary"
+                        th:attr="data-aviso=|Maqueta: ${p.codigo()} pasaría a «Entregado» (plataforma del courier en «listo para recoger» y cliente avisado por llamada).|">
+                  <svg th:replace="~{fragments/iconos :: icono('check', 18)}"></svg>
+                  Marcar entregado
+                </button>
+              </td>
+            </tr>
+            <tr th:if="${porConfirmar.isEmpty()}">
+              <td class="empty-cell" colspan="6">No hay registros para mostrar.</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+  </section>
+
+  <div class="modal-backdrop" id="modal-courier" hidden="hidden">
+    <div class="modal-panel">
+      <div class="modal-heading">
+        <div><h2>Registrar envío courier</h2><p data-slot="descripcion"></p></div>
+        <button type="button" class="icon-button" aria-label="Cerrar" data-modal-cerrar="">
+          <svg th:replace="~{fragments/iconos :: icono('close', 18)}"></svg>
+        </button>
+      </div>
+      <form action="#" method="post">
+        <div class="modal-fields">
+          <label class="field">
+            <span>Courier</span>
+            <select name="courier"><option>Olva</option><option>Shalom</option></select>
+          </label>
+          <label class="field">
+            <span>id_pedido_courier</span>
+            <input name="idPedidoCourier" placeholder="Ej. OLV-2025-00129" required="required"/>
+          </label>
+        </div>
+        <div class="modal-actions">
+          <button type="button" class="button button-ghost" data-modal-cerrar="">Cancelar</button>
+          <button type="submit" class="button button-primary">Guardar y continuar</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+</th:block>
+</body>
+</html>

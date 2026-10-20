@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org" th:fragment="layout(vista, contenido)">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title th:text="|${vista.titulo()} · Homeolive|">Homeolive</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com"/>
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin="crossorigin"/>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700;800&amp;display=swap"/>
+  <link rel="stylesheet" th:href="@{/css/reset.css}"/>
+  <link rel="stylesheet" th:href="@{/css/homeolive.css}"/>
+</head>
+<body>
+  <svg th:replace="~{fragments/iconos :: sprite}"></svg>
+
+  <div class="app-shell">
+    <div class="sidebar-overlay" id="sidebar-overlay" hidden="hidden"></div>
+
+    <aside th:replace="~{fragments/aside :: aside(${rol}, ${vista})}"></aside>
+
+    <div class="app-main">
+      <header class="topbar">
+        <button type="button" class="mobile-menu" aria-label="Abrir menú" data-menu-abrir="">
+          <svg th:replace="~{fragments/iconos :: icono('menu', 18)}"></svg>
+        </button>
+        <div>
+          <h1 th:text="${vista.titulo()}">Inicio</h1>
+          <p th:text="${vista.descripcion()}">Resumen general de la operación</p>
+        </div>
+        <div class="topbar-user">
+          <span th:text="|Hola, ${rol.nombrePila()}|">Hola, Andrea</span>
+          <div class="avatar small" th:text="${rol.iniciales()}">AV</div>
+        </div>
+      </header>
+
+      <main class="content">
+        <th:block th:replace="${contenido}"></th:block>
+      </main>
+    </div>
+  </div>
+
+  <script th:src="@{/js/app.js}" defer="defer"></script>
+</body>
+</html>

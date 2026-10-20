@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org"
+      th:replace="~{layout :: layout(${vista}, ~{::contenido})}">
+<body>
+<th:block th:fragment="contenido">
+
+  <section class="welcome-banner">
+    <div>
+      <span class="eyebrow light">Panel de operaciones</span>
+      <h2>Buenos días, el trabajo de hoy<br/>ya está en movimiento.</h2>
+      <p>Revisa el estado de la operación y continúa donde lo dejaste.</p>
+    </div>
+    <div class="welcome-graphic">
+      <div class="graphic-ring"><svg th:replace="~{fragments/iconos :: icono('clipboard', 34)}"></svg></div>
+      <div class="graphic-dot dot-one"></div>
+      <div class="graphic-dot dot-two"></div>
+    </div>
+  </section>
+
+  <div class="summary-grid">
+    <section class="card summary-card" th:each="i : ${indicadores}">
+      <div class="summary-icon" th:classappend="|tone-${i.tono()}|">
+        <svg th:replace="~{fragments/iconos :: icono(${i.icono()}, 18)}"></svg>
+      </div>
+      <div><span th:text="${i.etiqueta()}">En preparación</span><strong th:text="${i.valorTexto()}">01</strong></div>
+      <div class="summary-mark" th:classappend="|tone-${i.tono()}|"></div>
+    </section>
+  </div>
+
+  <div class="home-grid">
+    <section class="card">
+      <div class="section-heading">
+        <div><h3>Actividad reciente</h3><p>Últimos movimientos en los pedidos</p></div>
+      </div>
+      <div class="activity-list">
+        <div class="activity-item" th:each="p : ${actividad}">
+          <div class="order-bullet"><svg th:replace="~{fragments/iconos :: icono('box', 16)}"></svg></div>
+          <div class="activity-copy">
+            <strong th:text="${p.codigo()}">PED-1048</strong>
+            <span th:text="|${p.cliente().nombre()} · ${p.envio().etiqueta()}|">María Fernanda Rojas · Motorizado</span>
+          </div>
+          <span th:replace="~{fragments/componentes :: estado(${p.estado()})}"></span>
+          <time th:text="${p.fecha()}">Hoy, 09:42</time>
+        </div>
+      </div>
+    </section>
+
+    <section class="card">
+      <div class="section-heading">
+        <div><h3>Accesos rápidos</h3><p>Herramientas para tu rol</p></div>
+      </div>
+      <div class="quick-list">
+        <a th:each="v : ${rol.accesosRapidos()}" th:href="@{${v.ruta()}}">
+          <span class="quick-icon"><svg th:replace="~{fragments/iconos :: icono(${v.icono()}, 18)}"></svg></span>
+          <span><strong th:text="${v.titulo()}">Registro de pedidos</strong><small th:text="${v.descripcion()}">Registra una venta y genera un nuevo pedido</small></span>
+          <svg th:replace="~{fragments/iconos :: icono('chevron', 18)}"></svg>
+        </a>
+      </div>
+    </section>
+  </div>
+
+</th:block>
+</body>
+</html>

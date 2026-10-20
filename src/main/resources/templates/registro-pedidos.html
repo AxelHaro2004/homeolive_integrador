@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org"
+      th:replace="~{layout :: layout(${vista}, ~{::contenido})}">
+<body>
+<th:block th:fragment="contenido">
+
+  <form id="form-pedido" action="#" method="post">
+    <div class="success-banner" id="banner-exito" hidden="hidden">
+      <svg th:replace="~{fragments/iconos :: icono('check', 18)}"></svg>
+      Pedido registrado correctamente y enviado a preparación.
+    </div>
+
+    <div class="form-layout">
+      <section class="card form-card">
+        <div class="form-section-title">
+          <span>01</span>
+          <div><h3>Datos del pedido</h3><p>Identificación automática de la operación</p></div>
+        </div>
+        <div class="fields-grid two">
+          <label class="field"><span>N° de pedido</span><input class="readonly" readonly="readonly" th:value="${numeroPedido}" value="PED-1049"/></label>
+          <label class="field"><span>N° de venta</span><input class="readonly" readonly="readonly" th:value="${numeroVenta}" value="VEN-5082"/><small>Se genera automáticamente</small></label>
+        </div>
+      </section>
+
+      <section class="card form-card">
+        <div class="form-section-title">
+          <span>02</span>
+          <div><h3>Datos del cliente</h3><p>Información de contacto y entrega</p></div>
+        </div>
+        <div class="fields-grid two">
+          <label class="field"><span>Nombre y apellidos</span><input name="nombre" placeholder="Ej. Rosa Martínez López" required="required"/></label>
+          <label class="field"><span>DNI</span><input id="dni" name="dni" maxlength="8" inputmode="numeric" placeholder="8 dígitos" required="required"/></label>
+          <label class="field"><span>Teléfono</span><input name="telefono" placeholder="999 999 999" required="required"/></label>
+          <label class="field">
+            <span>Ubicación</span>
+            <select id="ubicacion" name="ubicacion"><option>Lima</option><option>Provincia</option></select>
+          </label>
+          <label class="field">
+            <span>Tipo de envío</span>
+            <select id="tipo-envio" name="envio"><option value="Motorizado">Motorizado</option><option value="Olva">Olva</option><option value="Shalom">Shalom</option></select>
+          </label>
+        </div>
+      </section>
+
+      <section class="card form-card full">
+        <div class="form-section-title items-heading">
+          <span>03</span>
+          <div><h3>Ítems del pedido</h3><p>Agrega uno o varios productos</p></div>
+          <button type="button" id="agregar-item" class="button button-secondary">
+            <svg th:replace="~{fragments/iconos :: icono('plus', 17)}"></svg>
+            Agregar ítem
+          </button>
+        </div>
+
+        <div class="items-list" id="lista-items">
+          <div class="item-row">
+            <span class="item-index">01</span>
+            <label class="field">
+              <span>Categoría</span>
+              <select name="categoria"><option th:each="c : ${categorias}" th:text="${c}">Flores de Bach</option></select>
+            </label>
+            <label class="field"><span>Producto</span><input name="producto" placeholder="Nombre del producto" required="required"/></label>
+            <label class="field">
+              <span>Presentación</span>
+              <select name="presentacion"><option th:each="p : ${presentaciones}" th:text="${p}">30 ml</option></select>
+            </label>
+            <label class="field"><span>Cantidad</span><input name="cantidad" type="number" min="1" value="1"/></label>
+            <button type="button" class="remove-item" aria-label="Eliminar ítem" disabled="disabled">
+              <svg th:replace="~{fragments/iconos :: icono('trash', 18)}"></svg>
+            </button>
+          </div>
+        </div>
+
+        <div class="form-actions">
+          <span id="contador-items">1 ítem en el pedido</span>
+          <button type="submit" class="button button-primary">
+            Registrar pedido
+            <svg th:replace="~{fragments/iconos :: icono('chevron', 18)}"></svg>
+          </button>
+        </div>
+      </section>
+    </div>
+  </form>
+
+</th:block>
+</body>
+</html>
