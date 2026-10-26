@@ -1,0 +1,221 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org"
+      th:replace="~{layout :: layout(${vista}, ~{::contenido})}">
+<body>
+<th:block th:fragment="contenido">
+
+  <th:block th:replace="~{fragments/componentes :: avisos}"></th:block>
+
+  <div class="summary-grid">
+    <article class="card summary-card">
+      <div class="summary-icon tone-blue"><svg th:replace="~{fragments/iconos :: icono('tag', 20)}"></svg></div>
+      <div><span>Categorías vigentes</span><strong th:text="${totalCategorias}">4</strong></div>
+      <i class="summary-mark" style="background:#43b8ee"></i>
+    </article>
+    <article class="card summary-card">
+      <div class="summary-icon tone-green"><svg th:replace="~{fragments/iconos :: icono('clipboard', 20)}"></svg></div>
+      <div><span>Presentaciones vigentes</span><strong th:text="${#lists.size(presentaciones)}">6</strong></div>
+      <i class="summary-mark" style="background:#2fa36b"></i>
+    </article>
+    <article class="card summary-card">
+      <div class="summary-icon tone-violet"><svg th:replace="~{fragments/iconos :: icono('box', 20)}"></svg></div>
+      <div><span>Productos registrados</span><strong th:text="${totalProductos}">9</strong></div>
+      <i class="summary-mark" style="background:#7759c7"></i>
+    </article>
+  </div>
+
+  <!-- ===================== Categorías ===================== -->
+  <section class="card">
+    <div class="table-toolbar">
+      <div th:replace="~{fragments/componentes :: buscador('tabla-categorias')}"></div>
+      <button type="button" class="button button-primary"
+              th:attr="data-modal-abrir='modal-categoria',data-titulo='Nueva categoría',data-boton='Crear categoría'">
+        <svg th:replace="~{fragments/iconos :: icono('plus', 17)}"></svg>
+        Nueva categoría
+      </button>
+    </div>
+
+    <div class="table-wrap">
+      <table id="tabla-categorias">
+        <thead>
+          <tr><th>Código</th><th>Nombre de la categoría</th><th>Presentaciones</th><th>Productos registrados</th><th>Acciones</th></tr>
+        </thead>
+        <tbody>
+          <tr th:each="c : ${categorias}">
+            <td><strong class="linkish" th:text="${c.codigo()}">CAT-001</strong></td>
+            <td>
+              <div class="table-person">
+                <div class="avatar" th:text="${#strings.toUpperCase(#strings.substring(c.nombre(), 0, c.nombre().length() > 1 ? 2 : 1))}">FL</div>
+                <div>
+                  <strong th:text="${c.nombre()}">Flores de Bach</strong>
+                  <small class="subcell" th:text="|id_categoria: ${c.id()}|">id_categoria: 1</small>
+                </div>
+              </div>
+            </td>
+            <td>
+              <span class="count-pill" th:classappend="${c.presentaciones() > 0} ? 'count-pill-on' : 'count-pill-off'"
+                    th:text="${c.presentaciones() == 1 ? '1 presentación' : c.presentaciones() + ' presentaciones'}">2 presentaciones</span>
+            </td>
+            <td>
+              <span class="count-pill" th:classappend="${c.tieneProductos()} ? 'count-pill-on' : 'count-pill-off'"
+                    th:text="${c.productos() == 1 ? '1 producto' : c.productos() + ' productos'}">2 productos</span>
+            </td>
+            <td>
+              <div class="row-actions">
+                <button type="button" aria-label="Editar"
+                        th:attr="data-modal-abrir='modal-categoria',data-titulo='Editar categoría',data-boton='Guardar cambios',data-id=${c.id()},data-nombre=${c.nombre()}">
+                  <svg th:replace="~{fragments/iconos :: icono('edit', 18)}"></svg>
+                </button>
+                <form th:action="@{'/categorias-presentaciones/categorias/' + ${c.id()} + '/eliminar'}" method="post"
+                      th:attr="data-confirmar='¿Eliminar la categoría «' + ${c.nombre()} + '»? También se eliminarán sus presentaciones. Los pedidos ya registrados se conservan.'">
+                  <button type="submit" class="danger-icon" aria-label="Eliminar">
+                    <svg th:replace="~{fragments/iconos :: icono('trash', 18)}"></svg>
+                  </button>
+                </form>
+              </div>
+            </td>
+          </tr>
+          <tr th:if="${#lists.isEmpty(categorias)}">
+            <td colspan="5" class="empty-cell">No se encontraron categorías con ese criterio de búsqueda.</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="table-footer">
+      <span th:text="|${#lists.size(categorias)} categorías listadas de ${totalCategorias}|">4 categorías listadas de 4</span>
+      <span>Tabla CATEGORIA_PRODUCTO · eliminación lógica</span>
+    </div>
+  </section>
+
+  <!-- ===================== Presentaciones ===================== -->
+  <section class="card">
+    <div class="table-toolbar">
+      <div th:replace="~{fragments/componentes :: buscador('tabla-presentaciones')}"></div>
+      <button type="button" class="button button-primary"
+              th:attr="data-modal-abrir='modal-presentacion',data-titulo='Nueva presentación',data-boton='Crear presentación'">
+        <svg th:replace="~{fragments/iconos :: icono('plus', 17)}"></svg>
+        Nueva presentación
+      </button>
+    </div>
+
+    <div class="table-wrap">
+      <table id="tabla-presentaciones">
+        <thead>
+          <tr><th>Código</th><th>Categoría</th><th>Presentación</th><th>Precio unitario</th><th>Acciones</th></tr>
+        </thead>
+        <tbody>
+          <tr th:each="p : ${presentaciones}">
+            <td><strong class="linkish" th:text="${p.codigo()}">PRE-001</strong></td>
+            <td th:text="${p.categoria()}">Flores de Bach</td>
+            <td><strong th:text="${p.etiqueta()}">30 ml</strong></td>
+            <td th:text="${p.precioTexto()}">S/ 42.00</td>
+            <td>
+              <div class="row-actions">
+                <button type="button" aria-label="Editar"
+                        th:attr="data-modal-abrir='modal-presentacion',data-titulo='Editar presentación',data-boton='Guardar cambios',data-id=${p.id()},data-categoria=${p.idCategoria()},data-categoria-texto=${p.categoria()},data-valor=${p.valor()},data-unidad=${p.unidad()},data-precio=${p.precio()}">
+                  <svg th:replace="~{fragments/iconos :: icono('edit', 18)}"></svg>
+                </button>
+                <form th:action="@{'/categorias-presentaciones/presentaciones/' + ${p.id()} + '/eliminar'}" method="post"
+                      th:attr="data-confirmar='¿Eliminar la presentación ' + ${p.etiqueta()} + ' de «' + ${p.categoria()} + '»? Los pedidos ya registrados se conservan.'">
+                  <button type="submit" class="danger-icon" aria-label="Eliminar">
+                    <svg th:replace="~{fragments/iconos :: icono('trash', 18)}"></svg>
+                  </button>
+                </form>
+              </div>
+            </td>
+          </tr>
+          <tr th:if="${#lists.isEmpty(presentaciones)}">
+            <td colspan="5" class="empty-cell">Aún no hay presentaciones. Crea la primera con «Nueva presentación».</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="table-footer">
+      <span th:text="|${#lists.size(presentaciones)} presentaciones vigentes|">6 presentaciones vigentes</span>
+      <span>Tabla CATEGORIA_PRESENTACION · el precio de los pedidos ya registrados no cambia</span>
+    </div>
+  </section>
+
+  <!-- ===================== Modal categoría ===================== -->
+  <div class="modal-backdrop" id="modal-categoria" hidden="hidden">
+    <div class="modal-panel">
+      <div class="modal-heading">
+        <div>
+          <h2 data-slot="titulo">Nueva categoría</h2>
+          <p>Crea o actualiza la categoría de producto.</p>
+        </div>
+        <button type="button" class="icon-button" aria-label="Cerrar" data-modal-cerrar="">
+          <svg th:replace="~{fragments/iconos :: icono('close', 18)}"></svg>
+        </button>
+      </div>
+      <form th:action="@{/categorias-presentaciones/categorias}" method="post"
+            data-base="/categorias-presentaciones/categorias" data-enviar="real">
+        <div class="modal-fields one">
+          <label class="field">
+            <span>Nombre de la categoría</span>
+            <input name="nombre" maxlength="100" required="required" placeholder="Ej. Flores de Bach"/>
+            <small>Máximo 100 caracteres. No se permiten nombres repetidos.</small>
+          </label>
+        </div>
+        <div class="modal-actions">
+          <button type="button" class="button button-ghost" data-modal-cerrar="">Cancelar</button>
+          <button type="submit" class="button button-primary" data-slot="boton">Crear categoría</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- ===================== Modal presentación ===================== -->
+  <div class="modal-backdrop" id="modal-presentacion" hidden="hidden">
+    <div class="modal-panel">
+      <div class="modal-heading">
+        <div>
+          <h2 data-slot="titulo">Nueva presentación</h2>
+          <p>Tamaño o formato en que se vende una categoría, con su precio.</p>
+        </div>
+        <button type="button" class="icon-button" aria-label="Cerrar" data-modal-cerrar="">
+          <svg th:replace="~{fragments/iconos :: icono('close', 18)}"></svg>
+        </button>
+      </div>
+      <form th:action="@{/categorias-presentaciones/presentaciones}" method="post"
+            data-base="/categorias-presentaciones/presentaciones" data-enviar="real">
+        <div class="modal-fields">
+          <label class="field" data-solo-crear="" style="grid-column: 1 / -1;">
+            <span>Categoría</span>
+            <select name="categoria" required="required">
+              <option th:each="c : ${categoriasActivas}" th:value="${c.id()}" th:text="${c.nombre()}">Flores de Bach</option>
+            </select>
+          </label>
+          <p class="field" data-solo-editar="" style="grid-column: 1 / -1; display: none; margin: 0;">
+            <span>Categoría</span>
+            <strong data-slot="categoriaTexto">Flores de Bach</strong>
+          </p>
+          <label class="field">
+            <span>Medida</span>
+            <input name="valor" type="number" min="1" max="99999" step="1" required="required" placeholder="Ej. 30"/>
+          </label>
+          <label class="field">
+            <span>Unidad</span>
+            <select name="unidad" required="required">
+              <option th:each="u : ${unidades}" th:value="${u}" th:text="${u}">ml</option>
+            </select>
+          </label>
+          <label class="field" style="grid-column: 1 / -1;">
+            <span>Precio unitario (S/)</span>
+            <input name="precio" type="number" min="0.01" max="99999.99" step="0.01" required="required" placeholder="Ej. 42.00"/>
+            <small>Si la presentación ya tiene pedidos, solo se puede cambiar el precio.</small>
+          </label>
+        </div>
+        <div class="modal-actions">
+          <button type="button" class="button button-ghost" data-modal-cerrar="">Cancelar</button>
+          <button type="submit" class="button button-primary" data-slot="boton">Crear presentación</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+</th:block>
+</body>
+</html>
