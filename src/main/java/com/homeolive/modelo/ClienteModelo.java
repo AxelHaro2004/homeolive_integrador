@@ -2,6 +2,9 @@ package com.homeolive.modelo;
 
 import com.homeolive.dao.ClienteDao;
 import com.homeolive.dao.PedidoDao;
+import com.homeolive.modelo.Cliente;
+import com.homeolive.modelo.DatosCliente;
+import com.homeolive.modelo.Ubicacion;
 import org.springframework.dao.DuplicateKeyException;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;

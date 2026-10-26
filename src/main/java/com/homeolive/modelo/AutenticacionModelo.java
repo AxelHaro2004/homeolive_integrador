@@ -2,11 +2,13 @@ package com.homeolive.modelo;
 
 import com.homeolive.acceso.UsuarioSesion;
 import com.homeolive.dao.UsuarioDao;
+import com.homeolive.modelo.Usuario;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
 
 import java.util.Locale;
 import java.util.Optional;
+
 
 /**
  * Autenticación por usuario (o correo) y contraseña. Las contraseñas se comparan contra su hash BCrypt;

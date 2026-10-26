@@ -1,6 +1,21 @@
 package com.homeolive.modelo;
 
-import org.apache.poi.ss.usermodel.*;
+import com.homeolive.modelo.EstadoPedido;
+import com.homeolive.modelo.ItemPedido;
+import com.homeolive.modelo.Pedido;
+import com.homeolive.modelo.PeriodoReporte;
+import com.homeolive.modelo.TipoEnvio;
+import org.apache.poi.ss.usermodel.BorderStyle;
+import org.apache.poi.ss.usermodel.Cell;
+import org.apache.poi.ss.usermodel.CellStyle;
+import org.apache.poi.ss.usermodel.FillPatternType;
+import org.apache.poi.ss.usermodel.Font;
+import org.apache.poi.ss.usermodel.HorizontalAlignment;
+import org.apache.poi.ss.usermodel.IndexedColors;
+import org.apache.poi.ss.usermodel.Row;
+import org.apache.poi.ss.usermodel.Sheet;
+import org.apache.poi.ss.usermodel.VerticalAlignment;
+import org.apache.poi.ss.usermodel.Workbook;
 import org.apache.poi.ss.util.CellRangeAddress;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.springframework.stereotype.Component;
@@ -11,7 +26,12 @@ import java.io.UncheckedIOException;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.time.LocalDate;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Comparator;
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Locale;
+import java.util.Map;
 
 /**
  * Generación de los reportes .xlsx con Apache POI.
@@ -226,7 +246,7 @@ public class ReporteModelo {
             row.createCell(3).setCellValue(f.monto().doubleValue());
             double parte = total.signum() == 0 ? 0
                     : f.monto().multiply(BigDecimal.valueOf(100))
-                            .divide(total, 2, RoundingMode.HALF_UP).doubleValue() / 100;
+                    .divide(total, 2, RoundingMode.HALF_UP).doubleValue() / 100;
             row.createCell(4).setCellValue(parte);
             estiloFila(row, est.detalle, titulos.length);
             row.getCell(1).setCellStyle(est.entero);
