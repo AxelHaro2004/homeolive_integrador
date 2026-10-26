@@ -237,7 +237,8 @@ code { padding: 6px 8px; color: #27516b; border-radius: 7px; background: #eff5f8
   .section-title-row { align-items: flex-start; gap: 10px; }.section-title-row p { max-width: 180px; }
   .login-form h2 { font-size: 29px; }
 }
-* ---------- Administración de categorías y exportación de reportes ---------- */
+
+/* ---------- Administración de categorías y exportación de reportes ---------- */
 .flash { display: flex; align-items: center; gap: 10px; margin-bottom: 16px; padding: 13px 16px; border-radius: 11px; font-size: 11px; font-weight: 600; }
 .flash-ok { color: #18764c; border: 1px solid #bce7d0; background: #eaf9f1; }
 .flash-error { color: #a83b48; border: 1px solid #f0ccd1; background: #fdf0f2; }
@@ -255,3 +256,15 @@ code { padding: 6px 8px; color: #27516b; border-radius: 7px; background: #eff5f8
 .export-form .button { min-height: 38px; }
 .export-link { min-height: 38px; font-size: 10px; text-decoration: underline; text-underline-offset: 3px; }
 @media (max-width: 650px) { .export-form { justify-content: stretch; } .export-form .button, .export-form .export-field { flex: 1 1 100%; } }
+
+/* ---- Avance 3: formularios con lógica real ---- */
+.check-field { display: flex; align-items: flex-start; gap: 10px; color: #28465c; font-size: 12px; font-weight: 600; cursor: pointer; }
+.check-field input { width: 17px; height: 17px; margin-top: 1px; accent-color: var(--primary); flex: none; }
+.check-stack { display: grid; gap: 12px; margin: 18px 0 4px; padding: 14px 16px; border: 1px solid #d5e3eb; border-radius: 11px; background: #f6fafc; }
+.pay-check { grid-column: 1 / -1; margin-top: 6px; padding: 14px 16px; border: 1px solid #d5e3eb; border-radius: 11px; background: #f6fafc; }
+.preparation-list > div[data-prep-item] { cursor: pointer; user-select: none; }
+.preparation-list > div.prep-done { background: #eaf9f1; }
+.preparation-list > div.prep-done .prep-check { color: #fff; border-color: #2fa36b; background: #2fa36b; }
+.preparation-list > div:not(.prep-done) .prep-check svg { opacity: .25; }
+.login-error { margin: 0 0 4px; }
+.inline-form { display: contents; }
