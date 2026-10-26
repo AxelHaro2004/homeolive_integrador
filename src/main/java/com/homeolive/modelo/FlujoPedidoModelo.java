@@ -2,6 +2,10 @@ package com.homeolive.modelo;
 
 import com.homeolive.dao.EmpaquetadoDao;
 import com.homeolive.dao.PedidoDao;
+import com.homeolive.modelo.ConfirmacionEntrega;
+import com.homeolive.modelo.EstadoPedido;
+import com.homeolive.modelo.Pedido;
+import com.homeolive.modelo.TipoEnvio;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 

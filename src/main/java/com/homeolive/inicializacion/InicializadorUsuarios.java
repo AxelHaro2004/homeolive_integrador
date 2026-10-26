@@ -1,4 +1,4 @@
-package com.homeolive.dao.inicializacion;
+package com.homeolive.inicializacion;
 
 import com.homeolive.acceso.Rol;
 import com.homeolive.dao.EmpleadoDao;

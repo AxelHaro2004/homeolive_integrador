@@ -7,28 +7,54 @@
   <section class="card">
     <div class="table-toolbar">
       <div th:replace="~{fragments/componentes :: buscador('tabla-pedidos')}"></div>
-      <button type="button" class="button button-secondary" th:if="${rol.puedeExportar()}"
-              data-aviso="Reporte de pedidos de los últimos 30 días exportado.">
-        <svg th:replace="~{fragments/iconos :: icono('download', 17)}"></svg>
-        Exportar reporte últimos 30 días
-      </button>
+
+      <form class="export-form" th:action="@{/resumen-pedidos}" method="get">
+        <label class="field export-field">
+          <span>Mes</span>
+          <select name="mes" data-autoenviar="">
+            <option th:each="m : ${meses}" th:value="${m.valor()}" th:text="${m.nombre()}"
+                    th:selected="${m.valor() == mesElegido}">Junio</option>
+          </select>
+        </label>
+        <label class="field export-field">
+          <span>Año</span>
+          <select name="anio" data-autoenviar="">
+            <option th:each="a : ${anios}" th:value="${a}" th:text="${a}"
+                    th:selected="${a == anioElegido}">2026</option>
+          </select>
+        </label>
+        <button type="submit" class="button button-secondary" th:if="${rol.puedeExportar()}"
+                th:formaction="@{/reportes/exportar}" name="tipo" value="pedidos">
+          <svg th:replace="~{fragments/iconos :: icono('download', 17)}"></svg>
+          Exportar pedidos del mes
+        </button>
+      </form>
     </div>
 
     <div class="table-wrap">
       <table id="tabla-pedidos">
         <thead>
-          <tr><th>N° pedido</th><th>Cliente</th><th>Ítems</th><th>Tipo de envío</th><th>Estado</th></tr>
+        <tr><th>N° pedido</th><th>Cliente</th><th>Ítems</th><th>Tipo de envío</th><th>Fecha</th><th>Estado</th></tr>
         </thead>
         <tbody>
-          <tr th:each="p : ${pedidos}">
-            <td><strong class="linkish" th:text="${p.codigo()}">PED-1048</strong></td>
-            <td th:text="${p.cliente().nombre()}">María Fernanda Rojas</td>
-            <td><div th:replace="~{fragments/componentes :: items(${p.items()})}"></div></td>
-            <td th:text="${p.envio().etiqueta()}">Motorizado</td>
-            <td><span th:replace="~{fragments/componentes :: estado(${p.estado()})}"></span></td>
-          </tr>
+        <tr th:each="p : ${pedidos}">
+          <td><strong class="linkish" th:text="${p.codigo()}">PED-1048</strong></td>
+          <td th:text="${p.cliente().nombre()}">María Fernanda Rojas</td>
+          <td><div th:replace="~{fragments/componentes :: items(${p.items()})}"></div></td>
+          <td th:text="${p.envio().etiqueta()}">Motorizado</td>
+          <td th:text="${p.fecha()}">Hoy, 09:42</td>
+          <td><span th:replace="~{fragments/componentes :: estado(${p.estado()})}"></span></td>
+        </tr>
+        <tr th:if="${pedidos.isEmpty()}">
+          <td colspan="6" class="empty-cell" th:text="|No hay pedidos registrados en ${periodoTexto}.|">No hay pedidos en este periodo.</td>
+        </tr>
         </tbody>
       </table>
+    </div>
+
+    <div class="table-footer">
+      <span th:text="|${pedidos.size()} pedidos en ${periodoTexto}|">6 pedidos en Octubre 2026</span>
+      <span>El reporte exportado incluye el detalle y los totales del periodo elegido.</span>
     </div>
   </section>
 

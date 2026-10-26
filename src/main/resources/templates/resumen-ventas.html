@@ -7,32 +7,53 @@
   <section class="card">
     <div class="table-toolbar">
       <div th:replace="~{fragments/componentes :: buscador('tabla-ventas')}"></div>
-      <button type="button" class="button button-secondary" th:if="${rol.puedeExportar()}"
-              data-aviso="Reporte de ventas de los últimos 30 días exportado.">
-        <svg th:replace="~{fragments/iconos :: icono('download', 17)}"></svg>
-        Exportar reporte últimos 30 días
-      </button>
+
+      <form class="export-form" th:action="@{/resumen-ventas}" method="get">
+        <label class="field export-field">
+          <span>Mes</span>
+          <select name="mes" data-autoenviar="">
+            <option th:each="m : ${meses}" th:value="${m.valor()}" th:text="${m.nombre()}"
+                    th:selected="${m.valor() == mesElegido}">Junio</option>
+          </select>
+        </label>
+        <label class="field export-field">
+          <span>Año</span>
+          <select name="anio" data-autoenviar="">
+            <option th:each="a : ${anios}" th:value="${a}" th:text="${a}"
+                    th:selected="${a == anioElegido}">2026</option>
+          </select>
+        </label>
+        <button type="submit" class="button button-secondary" th:if="${rol.puedeExportar()}"
+                th:formaction="@{/reportes/exportar}" name="tipo" value="ventas">
+          <svg th:replace="~{fragments/iconos :: icono('download', 17)}"></svg>
+          Exportar ventas del mes
+        </button>
+      </form>
     </div>
 
     <div class="table-wrap">
       <table id="tabla-ventas">
         <thead>
-          <tr><th>N° venta</th><th>DNI</th><th>Cliente</th><th>N° pedido</th><th>Monto total</th></tr>
+        <tr><th>N° venta</th><th>DNI</th><th>Cliente</th><th>N° pedido</th><th>Fecha</th><th>Monto total</th></tr>
         </thead>
         <tbody>
-          <tr th:each="p : ${pedidos}">
-            <td><strong class="linkish" th:text="${p.venta()}">VEN-5081</strong></td>
-            <td th:text="${p.cliente().dni()}">72541863</td>
-            <td th:text="${p.cliente().nombre()}">María Fernanda Rojas</td>
-            <td th:text="${p.codigo()}">PED-1048</td>
-            <td><strong th:text="${p.montoTexto()}">S/ 168.00</strong></td>
-          </tr>
+        <tr th:each="p : ${pedidos}">
+          <td><strong class="linkish" th:text="${p.venta()}">VEN-5081</strong></td>
+          <td th:text="${p.cliente().dni()}">72541863</td>
+          <td th:text="${p.cliente().nombre()}">María Fernanda Rojas</td>
+          <td th:text="${p.codigo()}">PED-1048</td>
+          <td th:text="${p.fecha()}">Hoy, 09:42</td>
+          <td><strong th:text="${p.montoTexto()}">S/ 168.00</strong></td>
+        </tr>
+        <tr th:if="${pedidos.isEmpty()}">
+          <td colspan="6" class="empty-cell" th:text="|No hay ventas registradas en ${periodoTexto}.|">No hay ventas en este periodo.</td>
+        </tr>
         </tbody>
       </table>
     </div>
 
     <div class="table-footer">
-      <span th:text="|${pedidos.size()} ventas registradas|">6 ventas registradas</span>
+      <span th:text="|${pedidos.size()} ventas en ${periodoTexto}|">6 ventas en Octubre 2026</span>
       <strong th:text="|Total ${totalTexto}|">Total S/ 827.00</strong>
     </div>
   </section>

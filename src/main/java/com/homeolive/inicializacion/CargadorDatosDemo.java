@@ -1,4 +1,4 @@
-package com.homeolive.dao.inicializacion;
+package com.homeolive.inicializacion;
 
 import com.homeolive.dao.*;
 import com.homeolive.modelo.*;
