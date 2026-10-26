@@ -22,7 +22,9 @@ public enum Vista {
     ADMIN_CLIENTES("/admin-clientes", "admin-clientes", "Administrar clientes",
             "Crea, edita y organiza la base de clientes", "users"),
     ADMIN_PEDIDOS("/admin-pedidos", "admin-pedidos", "Administrar pedidos",
-            "Control completo de los pedidos registrados", "clipboard");
+            "Control completo de los pedidos registrados", "clipboard"),
+    CATEGORIAS_PRESENTACIONES("/categorias-presentaciones", "categorias-presentaciones", "Categorías y presentaciones",
+            "Crea, edita y elimina categorías y presentaciones del catálogo de venta", "tag");
 
     private final String ruta;
     private final String etiquetaMenu;
@@ -58,7 +60,14 @@ public enum Vista {
         return icono;
     }
 
+    /**
+     * Vista a la que pertenece una ruta. Una ruta pertenece a la vista si es igual a ella o cuelga de
+     * ella (por ejemplo, {@code /categorias-presentaciones/categorias/3/editar} pertenece a {@code /categorias-presentaciones}),
+     * de modo que las acciones POST quedan protegidas con el mismo permiso que la pantalla.
+     */
     public static Optional<Vista> porRuta(String ruta) {
-        return Arrays.stream(values()).filter(v -> v.ruta.equals(ruta)).findFirst();
+        return Arrays.stream(values())
+                .filter(v -> ruta.equals(v.ruta) || ruta.startsWith(v.ruta + "/"))
+                .findFirst();
     }
 }
