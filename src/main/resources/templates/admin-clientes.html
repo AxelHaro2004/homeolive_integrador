@@ -4,6 +4,8 @@
 <body>
 <th:block th:fragment="contenido">
 
+  <th:block th:replace="~{fragments/componentes :: avisos}"></th:block>
+
   <section class="card">
     <div class="table-toolbar">
       <div th:replace="~{fragments/componentes :: buscador('tabla-clientes')}"></div>
@@ -17,31 +19,34 @@
     <div class="table-wrap">
       <table id="tabla-clientes">
         <thead>
-          <tr><th>Cliente</th><th>DNI</th><th>Teléfono</th><th>Ubicación</th><th>Acciones</th></tr>
+        <tr><th>Cliente</th><th>DNI</th><th>Teléfono</th><th>Ubicación</th><th>Acciones</th></tr>
         </thead>
         <tbody>
-          <tr th:each="c : ${clientes}">
-            <td>
-              <div class="table-person">
-                <div class="avatar small" th:text="${c.iniciales()}">MF</div>
-                <strong th:text="${c.nombre()}">María Fernanda Rojas</strong>
-              </div>
-            </td>
-            <td th:text="${c.dni()}">72541863</td>
-            <td th:text="${c.telefono()}">987 654 321</td>
-            <td th:text="${c.ubicacion()}">Lima</td>
-            <td>
-              <div class="row-actions">
-                <button type="button" aria-label="Editar"
-                        th:attr="data-modal-abrir='modal-cliente',data-titulo='Editar cliente',data-boton='Guardar cambios',data-nombre=${c.nombre()},data-dni=${c.dni()},data-telefono=${c.telefono()},data-ubicacion=${c.ubicacion()}">
-                  <svg th:replace="~{fragments/iconos :: icono('edit', 18)}"></svg>
-                </button>
-                <button type="button" class="danger-icon" aria-label="Eliminar" data-confirmar="¿Eliminar este cliente?">
+        <tr th:each="c : ${clientes}">
+          <td>
+            <div class="table-person">
+              <div class="avatar small" th:text="${c.iniciales()}">MF</div>
+              <strong th:text="${c.nombre()}">María Fernanda Rojas</strong>
+            </div>
+          </td>
+          <td th:text="${c.dni()}">72541863</td>
+          <td th:text="${c.telefono()}">987 654 321</td>
+          <td th:text="${c.ubicacion()}">Lima</td>
+          <td>
+            <div class="row-actions">
+              <button type="button" aria-label="Editar"
+                      th:attr="data-modal-abrir='modal-cliente',data-titulo='Editar cliente',data-boton='Guardar cambios',data-id=${c.id()},data-nombre=${c.nombre()},data-dni=${c.dni()},data-telefono=${c.telefono()},data-ubicacion=${c.ubicacion()}">
+                <svg th:replace="~{fragments/iconos :: icono('edit', 18)}"></svg>
+              </button>
+              <form th:action="@{'/admin-clientes/' + ${c.id()} + '/eliminar'}" method="post"
+                    th:attr="data-confirmar='¿Eliminar al cliente «' + ${c.nombre()} + '»?'">
+                <button type="submit" class="danger-icon" aria-label="Eliminar">
                   <svg th:replace="~{fragments/iconos :: icono('trash', 18)}"></svg>
                 </button>
-              </div>
-            </td>
-          </tr>
+              </form>
+            </div>
+          </td>
+        </tr>
         </tbody>
       </table>
     </div>
@@ -55,11 +60,11 @@
           <svg th:replace="~{fragments/iconos :: icono('close', 18)}"></svg>
         </button>
       </div>
-      <form action="#" method="post">
+      <form th:action="@{/admin-clientes}" method="post" data-base="/admin-clientes" data-enviar="real">
         <div class="modal-fields">
-          <label class="field"><span>Nombre y apellidos</span><input name="nombre" required="required"/></label>
-          <label class="field"><span>DNI</span><input name="dni" maxlength="8" required="required"/></label>
-          <label class="field"><span>Teléfono</span><input name="telefono" required="required"/></label>
+          <label class="field"><span>Nombre y apellidos</span><input name="nombre" maxlength="100" required="required"/></label>
+          <label class="field"><span>DNI</span><input name="dni" maxlength="8" minlength="8" inputmode="numeric" pattern="[0-9]{8}" required="required"/></label>
+          <label class="field"><span>Teléfono</span><input name="telefono" maxlength="15" inputmode="tel" placeholder="999 999 999" required="required"/></label>
           <label class="field">
             <span>Ubicación</span>
             <select name="ubicacion"><option>Lima</option><option>Provincia</option></select>
