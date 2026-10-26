@@ -34,20 +34,21 @@
       <h2>Bienvenido de nuevo</h2>
       <p class="form-lead">Ingresa tus datos para acceder a tu espacio de trabajo.</p>
 
+      <div class="flash flash-error login-error" th:if="${error}" role="alert">
+        <svg th:replace="~{fragments/iconos :: icono('close', 18)}"></svg>
+        <span th:text="${error}">Usuario o contraseña incorrectos.</span>
+      </div>
+
       <div class="login-fields">
         <label class="field">
-          <span>Usuario</span>
-          <input type="text" name="usuario" placeholder="nombre@curenci.pe" required="required"/>
+          <span>Usuario o correo</span>
+          <input type="text" name="usuario" placeholder="nombre@curenci.pe" required="required"
+                 maxlength="200" autocomplete="username" th:value="${identificador}"/>
         </label>
         <label class="field">
           <span>Contraseña</span>
-          <input type="password" name="clave" placeholder="Ingresa tu contraseña" minlength="3" required="required"/>
-        </label>
-        <label class="field">
-          <span>Selecciona tu rol</span>
-          <select name="rol">
-            <option th:each="r : ${roles}" th:value="${r.name()}" th:text="${r.etiqueta()}">Vendedor</option>
-          </select>
+          <input type="password" name="clave" placeholder="Ingresa tu contraseña" required="required"
+                 maxlength="100" autocomplete="current-password"/>
         </label>
       </div>
 

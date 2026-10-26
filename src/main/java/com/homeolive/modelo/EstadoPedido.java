@@ -1,5 +1,8 @@
 package com.homeolive.modelo;
 
+import java.util.Arrays;
+import java.util.Optional;
+
 public enum EstadoPedido {
 
     EN_PREPARACION("En preparación", "status-en-preparacion"),
@@ -15,12 +18,21 @@ public enum EstadoPedido {
         this.css = css;
     }
 
-
     public String etiqueta() {
         return etiqueta;
     }
 
     public String css() {
         return css;
+    }
+
+    public static Optional<EstadoPedido> deTexto(String texto) {
+        if (texto == null) {
+            return Optional.empty();
+        }
+        String limpio = texto.trim();
+        return Arrays.stream(values())
+                .filter(e -> e.name().equalsIgnoreCase(limpio) || e.etiqueta.equalsIgnoreCase(limpio))
+                .findFirst();
     }
 }

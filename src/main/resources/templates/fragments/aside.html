@@ -2,22 +2,22 @@
 <html xmlns:th="http://www.thymeleaf.org">
 <body>
 
-<aside th:fragment="aside(rol, activa)" class="sidebar" id="sidebar">
+<aside th:fragment="aside(usuario, activa)" class="sidebar" id="sidebar">
   <div class="sidebar-logo">
     <img th:src="@{/img/curenci-logo.jpg}" alt="Curenci"/>
   </div>
 
   <div class="sidebar-profile">
-    <div class="avatar" th:text="${rol.iniciales()}">AV</div>
+    <div class="avatar" th:text="${usuario.iniciales()}">AV</div>
     <div>
-      <strong th:text="${rol.nombreCompleto()}">Andrea Ramírez</strong>
-      <span th:text="${rol.etiqueta()}">Vendedor</span>
+      <strong th:text="${usuario.nombre()}">Andrea Ramírez</strong>
+      <span th:text="${usuario.rol().etiqueta()}">Vendedor</span>
     </div>
   </div>
 
   <nav>
     <p class="nav-caption">MENÚ PRINCIPAL</p>
-    <a th:each="v : ${rol.vistas()}"
+    <a th:each="v : ${usuario.rol().vistas()}"
        th:href="@{${v.ruta()}}"
        th:classappend="${v == activa} ? 'nav-active'"
        th:title="${v.etiquetaMenu()}">

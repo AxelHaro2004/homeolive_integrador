@@ -8,6 +8,17 @@
   <span th:each="it : ${lista}"><th:block th:text="|${it.cantidad()}× ${it.producto()}|">2× Calma Kids</th:block> <small th:text="${it.presentacion()}">30 ml</small></span>
 </div>
 
+<th:block th:fragment="avisos">
+  <div class="flash flash-ok" th:if="${mensaje}">
+    <svg th:replace="~{fragments/iconos :: icono('check', 18)}"></svg>
+    <span th:text="${mensaje}">Operación realizada correctamente.</span>
+  </div>
+  <div class="flash flash-error" th:if="${error}">
+    <svg th:replace="~{fragments/iconos :: icono('close', 18)}"></svg>
+    <span th:text="${error}">No se pudo completar la operación.</span>
+  </div>
+</th:block>
+
 <div th:fragment="buscador(tabla)" class="search-box">
   <svg th:replace="~{fragments/iconos :: icono('search', 18)}"></svg>
   <input type="text" placeholder="Buscar por nombre, DNI o número..." th:attr="data-filtro=${tabla}"/>
