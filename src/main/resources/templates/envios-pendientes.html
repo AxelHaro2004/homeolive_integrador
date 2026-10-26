@@ -4,6 +4,8 @@
 <body>
 <th:block th:fragment="contenido">
 
+  <th:block th:replace="~{fragments/componentes :: avisos}"></th:block>
+
   <section class="shipping-section">
     <div class="section-title-row">
       <div>
@@ -26,17 +28,17 @@
         <div th:replace="~{fragments/componentes :: items(${p.items()})}"></div>
 
         <div class="shipment-meta">
-          <span><small>Destino</small><th:block th:text="${p.cliente().ubicacion()}">Provincia</th:block></span>
+          <span><small>Destino</small><th:block th:text="${p.ubicacion()}">Provincia</th:block></span>
           <span><small>Teléfono</small><th:block th:text="${p.cliente().telefono()}">946 120 883</th:block></span>
         </div>
 
         <button type="button" class="button button-primary" th:if="${p.envio().esMotorizado()}"
-                th:attr="data-aviso=|Maqueta: ${p.codigo()} pasaría a «Entregado».|">
+                th:attr="data-modal-abrir='modal-entrega-motorizado',data-id=${p.id()},data-descripcion=|${p.codigo()} · ${p.cliente().nombre()}|">
           <svg th:replace="~{fragments/iconos :: icono('check', 18)}"></svg>
           Marcar entregado
         </button>
         <button type="button" class="button button-primary" th:unless="${p.envio().esMotorizado()}"
-                th:attr="data-modal-abrir='modal-courier',data-descripcion=|${p.codigo()} · ${p.cliente().nombre()}|,data-courier=${p.envio().etiqueta()}">
+                th:attr="data-modal-abrir='modal-courier',data-id=${p.id()},data-descripcion=|${p.codigo()} · ${p.cliente().nombre()}|,data-courier=${p.envio().etiqueta()}">
           <svg th:replace="~{fragments/iconos :: icono('clipboard', 18)}"></svg>
           Marcar por confirmar
         </button>
@@ -61,26 +63,26 @@
       <div class="table-wrap">
         <table>
           <thead>
-            <tr><th>Pedido</th><th>Cliente</th><th>Courier</th><th>ID pedido courier</th><th>Ítems</th><th>Acción</th></tr>
+          <tr><th>Pedido</th><th>Cliente</th><th>Courier</th><th>ID pedido courier</th><th>Ítems</th><th>Acción</th></tr>
           </thead>
           <tbody>
-            <tr th:each="p : ${porConfirmar}">
-              <td><strong th:text="${p.codigo()}">PED-1045</strong></td>
-              <td th:text="${p.cliente().nombre()}">Carlos Mendoza Ruiz</td>
-              <td><span class="courier-label" th:text="${p.envio().etiqueta()}">Shalom</span></td>
-              <td><code th:text="${p.idCourier()}">SHA-9384512</code></td>
-              <td><div th:replace="~{fragments/componentes :: items(${p.items()})}"></div></td>
-              <td>
-                <button type="button" class="button button-secondary"
-                        th:attr="data-aviso=|Maqueta: ${p.codigo()} pasaría a «Entregado» (plataforma del courier en «listo para recoger» y cliente avisado por llamada).|">
-                  <svg th:replace="~{fragments/iconos :: icono('check', 18)}"></svg>
-                  Marcar entregado
-                </button>
-              </td>
-            </tr>
-            <tr th:if="${porConfirmar.isEmpty()}">
-              <td class="empty-cell" colspan="6">No hay registros para mostrar.</td>
-            </tr>
+          <tr th:each="p : ${porConfirmar}">
+            <td><strong th:text="${p.codigo()}">PED-1045</strong></td>
+            <td th:text="${p.cliente().nombre()}">Carlos Mendoza Ruiz</td>
+            <td><span class="courier-label" th:text="${p.envio().etiqueta()}">Shalom</span></td>
+            <td><code th:text="${p.idCourier()}">SHA-9384512</code></td>
+            <td><div th:replace="~{fragments/componentes :: items(${p.items()})}"></div></td>
+            <td>
+              <button type="button" class="button button-secondary"
+                      th:attr="data-modal-abrir='modal-entrega-courier',data-id=${p.id()},data-descripcion=|${p.codigo()} · ${p.cliente().nombre()} · ${p.idCourier()}|">
+                <svg th:replace="~{fragments/iconos :: icono('check', 18)}"></svg>
+                Marcar entregado
+              </button>
+            </td>
+          </tr>
+          <tr th:if="${porConfirmar.isEmpty()}">
+            <td class="empty-cell" colspan="6">No hay registros para mostrar.</td>
+          </tr>
           </tbody>
         </table>
       </div>
@@ -95,7 +97,8 @@
           <svg th:replace="~{fragments/iconos :: icono('close', 18)}"></svg>
         </button>
       </div>
-      <form action="#" method="post">
+      <form th:action="@{/envios-pendientes}" method="post" data-base="/envios-pendientes"
+            data-sufijo="por-confirmar" data-enviar="real">
         <div class="modal-fields">
           <label class="field">
             <span>Courier</span>
@@ -103,12 +106,64 @@
           </label>
           <label class="field">
             <span>id_pedido_courier</span>
-            <input name="idPedidoCourier" placeholder="Ej. OLV-2025-00129" required="required"/>
+            <input name="idPedidoCourier" maxlength="50" placeholder="Ej. OLV-2025-00129" required="required"/>
           </label>
         </div>
         <div class="modal-actions">
           <button type="button" class="button button-ghost" data-modal-cerrar="">Cancelar</button>
           <button type="submit" class="button button-primary">Guardar y continuar</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <div class="modal-backdrop" id="modal-entrega-motorizado" hidden="hidden">
+    <div class="modal-panel">
+      <div class="modal-heading">
+        <div><h2>Confirmar entrega</h2><p data-slot="descripcion"></p></div>
+        <button type="button" class="icon-button" aria-label="Cerrar" data-modal-cerrar="">
+          <svg th:replace="~{fragments/iconos :: icono('close', 18)}"></svg>
+        </button>
+      </div>
+      <form th:action="@{/envios-pendientes}" method="post" data-base="/envios-pendientes"
+            data-sufijo="entregado" data-enviar="real">
+        <div class="check-stack">
+          <label class="check-field">
+            <input type="checkbox" name="clienteConfirmo" value="true" required="required"/>
+            <span>El cliente confirmó que recibió su pedido.</span>
+          </label>
+        </div>
+        <div class="modal-actions">
+          <button type="button" class="button button-ghost" data-modal-cerrar="">Cancelar</button>
+          <button type="submit" class="button button-primary">Marcar entregado</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <div class="modal-backdrop" id="modal-entrega-courier" hidden="hidden">
+    <div class="modal-panel">
+      <div class="modal-heading">
+        <div><h2>Confirmar entrega por courier</h2><p data-slot="descripcion"></p></div>
+        <button type="button" class="icon-button" aria-label="Cerrar" data-modal-cerrar="">
+          <svg th:replace="~{fragments/iconos :: icono('close', 18)}"></svg>
+        </button>
+      </div>
+      <form th:action="@{/envios-pendientes}" method="post" data-base="/envios-pendientes"
+            data-sufijo="entregado" data-enviar="real">
+        <div class="check-stack">
+          <label class="check-field">
+            <input type="checkbox" name="plataformaListo" value="true" required="required"/>
+            <span>En la plataforma del courier el pedido figura como «listo para recoger».</span>
+          </label>
+          <label class="check-field">
+            <input type="checkbox" name="clienteAvisado" value="true" required="required"/>
+            <span>Ya llamé al cliente para avisarle que puede pasar a recoger su pedido.</span>
+          </label>
+        </div>
+        <div class="modal-actions">
+          <button type="button" class="button button-ghost" data-modal-cerrar="">Cancelar</button>
+          <button type="submit" class="button button-primary">Marcar entregado</button>
         </div>
       </form>
     </div>

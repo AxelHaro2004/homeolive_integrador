@@ -40,7 +40,7 @@
             <span th:text="|${p.cliente().nombre()} · ${p.envio().etiqueta()}|">María Fernanda Rojas · Motorizado</span>
           </div>
           <span th:replace="~{fragments/componentes :: estado(${p.estado()})}"></span>
-          <time th:text="${p.fecha()}">Hoy, 09:42</time>
+          <time th:text="${p.fechaActualizacionTexto()}">Hoy, 09:42</time>
         </div>
       </div>
     </section>

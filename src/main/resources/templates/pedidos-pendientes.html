@@ -4,6 +4,8 @@
 <body>
 <th:block th:fragment="contenido">
 
+  <th:block th:replace="~{fragments/componentes :: avisos}"></th:block>
+
   <div class="order-card-grid">
     <section class="card work-order" th:each="p : ${pendientes}">
       <div class="work-order-head">
@@ -19,8 +21,8 @@
         </div>
       </div>
 
-      <div class="preparation-list">
-        <div th:each="it : ${p.items()}">
+      <div class="preparation-list" data-prep-lista="">
+        <div th:each="it : ${p.items()}" data-prep-item="" title="Toca para marcar el ítem como preparado">
           <span class="quantity" th:text="${it.cantidad()}">2</span>
           <div>
             <strong th:text="${it.producto()}">Calma Kids</strong>
@@ -30,11 +32,13 @@
         </div>
       </div>
 
-      <button type="button" class="button button-primary"
-              th:attr="data-aviso=|Maqueta: ${p.codigo()} pasaría a «Listo para envío».|">
-        <svg th:replace="~{fragments/iconos :: icono('check', 18)}"></svg>
-        Marcar listo para envío
-      </button>
+      <form th:action="@{'/pedidos-pendientes/' + ${p.id()} + '/listo'}" method="post" data-prep-form="">
+        <button type="submit" class="button button-primary" disabled="disabled" data-prep-boton=""
+                title="Marca todos los ítems como preparados para continuar">
+          <svg th:replace="~{fragments/iconos :: icono('check', 18)}"></svg>
+          Marcar listo para envío
+        </button>
+      </form>
     </section>
 
     <section class="card empty-state" th:if="${pendientes.isEmpty()}">
